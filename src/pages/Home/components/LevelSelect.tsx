@@ -3,27 +3,35 @@ import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
 
 interface LevelSelectProps {
-	levelInfo: {
-		number: number;
-		name: string;
-		difficulty: string;
-	},
-	imageUrl: string,
+	levelData: {
+		levelNumber: number,
+		charactersAndCoords: any[]
+		imageUrl: string,
+		levelTime: string
+	}
+	
 }
 
-function LevelSelect({ levelInfo, imageUrl }: LevelSelectProps) {
+function LevelSelect({ levelData }: LevelSelectProps) {
 
 	const navigate = useNavigate();
 	
 	const goToLevel = () =>{
-		navigate("game/", { state: { levelNumber: levelInfo.number } })
+		navigate("game/", { state: { 
+			
+		 } })
 	}
 
 	return (
 		<div>
-			<button onClick={goToLevel}>{levelInfo.number}</button>
+			<StyledImg onClick={goToLevel} src={levelData.imageUrl}/>
 		</div>
 	);
 }
+
+const StyledImg = styled.img`
+	width: 300px;
+	height: 150px;
+`
 
 export default LevelSelect;

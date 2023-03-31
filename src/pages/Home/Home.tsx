@@ -1,24 +1,40 @@
 import React from 'react';
 import styled from 'styled-components';
+import { db, getDoc, doc, collection, getDocs } from '../../firebase/firebase';
 import { useIsMobile } from '../../hooks/useIsMobile';
 import LevelSelect from './components/LevelSelect';
 
+interface LevelData {
+	levelNumber: number,
+	charactersAndCoords: any[]
+	imageUrl: string,
+	levelTime: string
+}
+
 function Home() {
+
 	const isMobile = useIsMobile();
+	const [levelsData, setlevelsData] = React.useState<null | LevelData[]>(null)
 
-	const levelInfo = {
-		name: "Paha",
-		number: 4,
-		difficulty: "easy"
-	}
-
-	console.log(isMobile)
+	React.useEffect(() => {
+		getDocs(collection(db, "levels")).then(response => {
+			let allLevelsData: any[] = [];
+			response.forEach((levelData) => {
+				allLevelsData.push(levelData.data())
+			});
+			setlevelsData(allLevelsData)
+		});
+	}, [])
 
 	return (
 		<HomePage>
 			<h1>Choose level</h1>
 			<div>
-				<LevelSelect levelInfo={levelInfo} imageUrl={"sd"}></LevelSelect>
+				{levelsData?.map((levelData, index) => {
+					return (
+						<LevelSelect key={"level" + index} levelData={levelData} />
+					)
+				})}
 			</div>
 		</HomePage>
 	);
