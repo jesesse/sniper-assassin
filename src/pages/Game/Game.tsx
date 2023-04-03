@@ -6,19 +6,21 @@ import styled from 'styled-components';
 
 const Game = () => {
 
-  const location = useLocation();
   const isMobile = useIsMobile();
+  const location = useLocation();
   const [isTimerOn, setIsTimerOn] = React.useState(false)
   const [levelTime, setLevelTime] = React.useState(() => location.state.levelData.levelTime)
   const [charactersAndCoords, setCharactersAndCoords] = React.useState(() => location.state.levelData.charactersAndCoords)
 
-  console.log(charactersAndCoords)
-
-
+  function timeIsOut() {
+    setIsTimerOn(false)
+  }
+  
   return (
     <div>
-      <Timer isTimerOn={isTimerOn} time={levelTime}></Timer>
+      <Timer isTimerOn={isTimerOn} time={levelTime} timeIsOut={timeIsOut}></Timer>
       <LevelImage src={location.state.levelData.levelImageUrl}></LevelImage>
+      <button onClick={()=>setIsTimerOn(prev => !prev)}>TIMER</button>
     </div>
   )
 }

@@ -29,13 +29,15 @@ function Home() {
 		});
 	}, [])
 
+	const levelSelectorElements = levelsData?.map((levelData: LevelData, index) => {
+		return <LevelSelect key={"level" + index} levelData={levelData} />
+	})
+
 	return (
 		<HomePage>
 			<h1>Choose level</h1>
-			<LevelSelectSection> 
-				{levelsData && levelsData.map((levelData: LevelData, index) => {
-					return <LevelSelect key={"level" + index} levelData={levelData} />
-				})}
+			<LevelSelectSection>
+				{levelsData && levelSelectorElements}
 				{!levelsData && "LOADING LEVELS..."}
 			</LevelSelectSection>
 		</HomePage>
