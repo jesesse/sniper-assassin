@@ -1,19 +1,25 @@
 import React from 'react'
+import styled from 'styled-components'
 
 interface TimerProps {
-  isTimerOn: boolean,
   time: string,
-  timeIsOut: () => void;
+  hanldeTimeIsOut: () => void,
+  toggleTimer: boolean
 }
 
-const Timer = ({ isTimerOn, time, timeIsOut }: TimerProps) => {
+const Timer = ({ time, hanldeTimeIsOut, toggleTimer }: TimerProps) => {
 
   const [timer, setTimer] = React.useState(time);
+  const [timerIsOn, setTimerIsOn] = React.useState(false)
 
   React.useEffect(() => {
-    if (isTimerOn) {
+    if (toggleTimer) setTimerIsOn(prev => !prev)
+  }, [toggleTimer])
+  
+  React.useEffect(() => {
+    if (timerIsOn) {
       let interval = setInterval(() => {
-        setTimer((prev) => { 
+        setTimer((prev) => {
           const currentTime = prev.split(':');
           const newTimeInSeconds = (+currentTime[0] * 60 + +currentTime[1]) - 1;
           const mins = Math.floor((newTimeInSeconds % 3600) / 60);
@@ -23,24 +29,35 @@ const Timer = ({ isTimerOn, time, timeIsOut }: TimerProps) => {
           newTime += "" + secs;
           return newTime;
         });
-      }, 10);
+      }, 1000);
+
       return () => clearInterval(interval);
+
     } else return;
 
-  }, [isTimerOn])
+  }, [timerIsOn])
 
   React.useEffect(() => {
     if (timer === "0:00") {
-      timeIsOut();
+      setTimerIsOn(false)
+      hanldeTimeIsOut();
     }
-  },[timer])
+  }, [timer])
 
 
   return (
     <>
-      <div>{timer}</div>
+      <StyledTimer>{timer}</StyledTimer>
     </>
   )
 }
+
+const StyledTimer = styled.div`
+  display: flex;
+  justify-content: center;
+  position: sticky;
+  top: 0;
+  font-size: 2rem;
+`
 
 export default Timer
