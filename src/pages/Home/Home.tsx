@@ -6,7 +6,7 @@ import LevelSelect from './components/LevelSelect';
 
 interface LevelData {
 	levelNumber: number,
-	charactersAndCoords: any[]
+	characters: any[]
 	levelImageUrl: string,
 	levelTime: string
 }

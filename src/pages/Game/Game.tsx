@@ -5,30 +5,50 @@ import LevelImage from './components/LevelImage';
 import Timer from './components/Timer'
 import styled from 'styled-components';
 import BloodSplash from './components/BloodSplash';
+import TargetsContainer from './components/TargetsContainer';
+
+interface LevelData {
+  levelData: {
+    levelNumber: number,
+    characters: any[]
+    levelImageUrl: string,
+    levelTime: string
+  }
+}
 
 const Game = () => {
 
   const isMobile = useIsMobile();
   const location = useLocation();
+  const { levelData } = location.state as LevelData;
   const [gameOver, setGameOver] = React.useState(false)
-  const [levelImgURL, setLevelImageUrl] = React.useState(() => location.state.levelData.levelImageUrl)
   const [toggleTimer, setToggleTimer] = React.useState(false)
-  const [levelTime, setLevelTime] = React.useState(() => location.state.levelData.levelTime)
-  const [charactersAndCoords, setCharactersAndCoords] = React.useState(() => location.state.levelData.charactersAndCoords)
-  const [clickedX, setClickedX] = React.useState<null | number>(null)
-  const [clickedY, setClickedY] = React.useState<null | number>(null)
   const [splashElements, setSplashElements] = React.useState<null | JSX.Element[]>(null)
-  
+
   React.useEffect(() => {
     setToggleTimer(true)
   }, [])
 
+  React.useEffect(() => {
+    if (levelData.characters.length === 0) {
+      setToggleTimer(false)
+      console.log("LÄPI MENI")
+    }
+  }, [levelData.characters])
+
   const handleClick = (e: React.MouseEvent) => {
-    setSplashElements(prev => {
-      if (prev === null) return [<BloodSplash x={e.pageX} y={e.pageY}></BloodSplash>]
-      else return prev.concat(<BloodSplash x={e.pageX} y={e.pageY}></BloodSplash>)
+    levelData.characters.forEach(char => {
+      let name = char.name;
+      if (((char.coordinates.x - 25 < e.pageX) && (char.coordinates.x + 25 > e.pageX)) &&
+        ((char.coordinates.y - 25 < e.pageY) && (char.coordinates.y + 25 > e.pageY))
+      ) levelData.characters = levelData.characters.filter(char => char.name !== name);
+
     })
-    
+    setSplashElements(prev => {
+      if (prev === null) return [<BloodSplash key={e.pageX + e.pageY} x={e.pageX} y={e.pageY}></BloodSplash>]
+      else return prev.concat(<BloodSplash key={e.pageX + e.pageY} x={e.pageX} y={e.pageY}></BloodSplash>)
+    })
+
   }
 
   const hanldeTimeIsOut = () => {
@@ -38,15 +58,19 @@ const Game = () => {
 
   return (
     <GamePage>
+      <LevelInfoBar>
+        <LevelNameHeader>LEVEL NAME</LevelNameHeader>
+        <Timer time={levelData.levelTime} hanldeTimeIsOut={hanldeTimeIsOut} toggleTimer={toggleTimer}></Timer>
+        <TargetsContainer characters={levelData.characters}></TargetsContainer>
+      </LevelInfoBar>
       {!gameOver &&
-        <>
-        <Timer time={levelTime} hanldeTimeIsOut={hanldeTimeIsOut} toggleTimer={toggleTimer}></Timer>
+        <div>
           <LevelImage
-            imgURL={levelImgURL}
+            imgURL={levelData.levelImageUrl}
             handleClick={handleClick}
           />
-        {splashElements}
-        </>
+          {splashElements}
+        </div>
       }
       {gameOver && "TIME IS OUT YOU LOSER"}
 
@@ -55,8 +79,25 @@ const Game = () => {
 }
 
 const GamePage = styled.div`
-  position: relative;
   text-align: center;
+`
+
+const LevelInfoBar = styled.div`
+  position: sticky;
+  top: 0;
+  width: 1924px;
+  margin: auto;
+  display: flex;
+  flex-flow: row;
+  justify-content: space-around;
+  align-items: center;
+  background-color: #ffffffac;
+`
+
+const LevelNameHeader = styled.h2`
+  flex: 1;
+  display: flex;
+  justify-content: center;
 `
 
 

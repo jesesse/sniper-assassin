@@ -15,7 +15,7 @@ const Timer = ({ time, hanldeTimeIsOut, toggleTimer }: TimerProps) => {
   React.useEffect(() => {
     if (toggleTimer) setTimerIsOn(prev => !prev)
   }, [toggleTimer])
-  
+
   React.useEffect(() => {
     if (timerIsOn) {
       let interval = setInterval(() => {
@@ -46,17 +46,14 @@ const Timer = ({ time, hanldeTimeIsOut, toggleTimer }: TimerProps) => {
 
 
   return (
-    <>
-      <StyledTimer>{timer}</StyledTimer>
-    </>
+    <StyledTimer>{timer}</StyledTimer>
   )
 }
 
 const StyledTimer = styled.div`
+  flex: 1;
   display: flex;
   justify-content: center;
-  position: sticky;
-  top: 0;
   font-size: 2rem;
 `
 

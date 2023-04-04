@@ -5,7 +5,7 @@ import { useNavigate } from 'react-router-dom';
 interface LevelSelectProps {
 	levelData: {
 		levelNumber: number,
-		charactersAndCoords: any[]
+		characters: any[]
 		levelImageUrl: string,
 		levelTime: string
 	}
