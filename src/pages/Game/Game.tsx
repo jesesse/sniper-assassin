@@ -6,6 +6,7 @@ import Timer from './components/Timer'
 import styled from 'styled-components';
 import BloodSplash from './components/BloodSplash';
 import TargetsContainer from './components/TargetsContainer';
+import CrossHair from './components/CrossHair';
 
 interface LevelData {
   levelData: {
@@ -20,6 +21,7 @@ const Game = () => {
 
   const isMobile = useIsMobile();
   const location = useLocation();
+  const [cursorLocation, setCursorLocation] = React.useState({x: 1, y: 1})
   const { levelData } = location.state as LevelData;
   const [gameOver, setGameOver] = React.useState(false)
   const [toggleTimer, setToggleTimer] = React.useState(false)
@@ -36,18 +38,25 @@ const Game = () => {
     }
   }, [levelData.characters])
 
+  const handleHover = (e: React.MouseEvent) => {
+    setCursorLocation({x: e.pageX, y:e.pageY})
+  }
+
   const handleClick = (e: React.MouseEvent) => {
     levelData.characters.forEach(char => {
       let name = char.name;
       if (((char.coordinates.x - 25 < e.pageX) && (char.coordinates.x + 25 > e.pageX)) &&
         ((char.coordinates.y - 25 < e.pageY) && (char.coordinates.y + 25 > e.pageY))
-      ) levelData.characters = levelData.characters.filter(char => char.name !== name);
+      ) {
+        levelData.characters = levelData.characters.filter(char => char.name !== name);
+        setSplashElements(prev => {
+          if (prev === null) return [<BloodSplash key={e.pageX + e.pageY} x={e.pageX} y={e.pageY}></BloodSplash>]
+          else return prev.concat(<BloodSplash key={e.pageX + e.pageY} x={e.pageX} y={e.pageY}></BloodSplash>)
+        })
+      }
 
     })
-    setSplashElements(prev => {
-      if (prev === null) return [<BloodSplash key={e.pageX + e.pageY} x={e.pageX} y={e.pageY}></BloodSplash>]
-      else return prev.concat(<BloodSplash key={e.pageX + e.pageY} x={e.pageX} y={e.pageY}></BloodSplash>)
-    })
+
 
   }
 
@@ -67,8 +76,10 @@ const Game = () => {
         <div>
           <LevelImage
             imgURL={levelData.levelImageUrl}
+            handleHover={handleHover}
             handleClick={handleClick}
           />
+          <CrossHair {...cursorLocation}></CrossHair>
           {splashElements}
         </div>
       }
@@ -79,17 +90,17 @@ const Game = () => {
 }
 
 const GamePage = styled.div`
-  text-align: center;
+
 `
 
 const LevelInfoBar = styled.div`
   position: sticky;
   top: 0;
-  width: 1924px;
+  width: 100vw;
   margin: auto;
   display: flex;
   flex-flow: row;
-  justify-content: space-around;
+  justify-content: space-between;
   align-items: center;
   background-color: #ffffffac;
 `
