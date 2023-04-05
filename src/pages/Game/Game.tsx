@@ -24,17 +24,16 @@ const Game = () => {
   const [cursorLocation, setCursorLocation] = React.useState({x: 1, y: 1})
   const { levelData } = location.state as LevelData;
   const [gameOver, setGameOver] = React.useState(false)
-  const [isTimerOn, setIsTimerOn] = React.useState(false)
+  const [toggleTimer, setToggleTimer] = React.useState(false)
   const [splashElements, setSplashElements] = React.useState<null | JSX.Element[]>(null)
 
   React.useEffect(() => {
-    setIsTimerOn(true)
+    setToggleTimer(true)
   }, [])
 
   React.useEffect(() => {
     if (levelData.characters.length === 0) {
-      setIsTimerOn(false)
-      console.log("LÄPI MENI")
+      setToggleTimer(false)
     }
   }, [levelData.characters])
 
@@ -56,20 +55,23 @@ const Game = () => {
       }
 
     })
-
-
   }
 
   const hanldeTimeIsOut = () => {
-    console.log("aikahan se loippu notta")
-    setGameOver(true)
+    console.log("AIKA LOPPU")
+    setToggleTimer(false)
+  }
+
+  const handleWin = (time:string) => {
+    console.log("LÄPI MENI")
+    console.log(time)
   }
 
   return (
     <GamePage>
       <LevelInfoBar>
         <LevelNameHeader>LEVEL NAME</LevelNameHeader>
-        <Timer time={levelData.levelTime} hanldeTimeIsOut={hanldeTimeIsOut} isTimerOn={isTimerOn}></Timer>
+        <Timer time={levelData.levelTime} hanldeTimeIsOut={hanldeTimeIsOut} handleWin={handleWin} toggleTimer={toggleTimer}></Timer>
         <TargetsContainer characters={levelData.characters}></TargetsContainer>
       </LevelInfoBar>
       {!gameOver &&
