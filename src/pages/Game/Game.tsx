@@ -24,16 +24,16 @@ const Game = () => {
   const [cursorLocation, setCursorLocation] = React.useState({x: 1, y: 1})
   const { levelData } = location.state as LevelData;
   const [gameOver, setGameOver] = React.useState(false)
-  const [toggleTimer, setToggleTimer] = React.useState(false)
+  const [isTimerOn, setIsTimerOn] = React.useState(false)
   const [splashElements, setSplashElements] = React.useState<null | JSX.Element[]>(null)
 
   React.useEffect(() => {
-    setToggleTimer(true)
+    setIsTimerOn(true)
   }, [])
 
   React.useEffect(() => {
     if (levelData.characters.length === 0) {
-      setToggleTimer(false)
+      setIsTimerOn(false)
       console.log("LÄPI MENI")
     }
   }, [levelData.characters])
@@ -45,8 +45,8 @@ const Game = () => {
   const handleClick = (e: React.MouseEvent) => {
     levelData.characters.forEach(char => {
       let name = char.name;
-      if (((char.coordinates.x - 25 < e.pageX) && (char.coordinates.x + 25 > e.pageX)) &&
-        ((char.coordinates.y - 25 < e.pageY) && (char.coordinates.y + 25 > e.pageY))
+      if (((char.coordinates.x - 10 < e.pageX) && (char.coordinates.x + 10 > e.pageX)) &&
+        ((char.coordinates.y - 20 < e.pageY) && (char.coordinates.y + 20 > e.pageY))
       ) {
         levelData.characters = levelData.characters.filter(char => char.name !== name);
         setSplashElements(prev => {
@@ -69,7 +69,7 @@ const Game = () => {
     <GamePage>
       <LevelInfoBar>
         <LevelNameHeader>LEVEL NAME</LevelNameHeader>
-        <Timer time={levelData.levelTime} hanldeTimeIsOut={hanldeTimeIsOut} toggleTimer={toggleTimer}></Timer>
+        <Timer time={levelData.levelTime} hanldeTimeIsOut={hanldeTimeIsOut} isTimerOn={isTimerOn}></Timer>
         <TargetsContainer characters={levelData.characters}></TargetsContainer>
       </LevelInfoBar>
       {!gameOver &&

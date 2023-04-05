@@ -2,24 +2,25 @@
 import React from "react";
 import styled from "styled-components";
 
-interface Props {
+interface CrossHairProps {
   x: number
   y: number
 }
 
-function CrossHair({ x, y }: Props) {
-  let joo = {x,y}
+function CrossHair(props: CrossHairProps) {
+
   return (
-    <StyledCrosshair {...joo}>
+    <StyledCrosshair {...props}>
       <CenterPoint />
     </StyledCrosshair>
   );
 }
 
-const StyledCrosshair = styled.div.attrs<Props>(({x, y}: Props) => ({
+
+const StyledCrosshair = styled.div.attrs<CrossHairProps>((props: CrossHairProps) => ({
   style: {
-    top: y - 25 + 'px',
-    left: x - 25 + 'px',
+    top: props.y - 25 + 'px',
+    left: props.x - 25 + 'px',
   },
 }))`
 display: flex;

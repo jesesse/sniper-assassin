@@ -4,21 +4,21 @@ import styled from 'styled-components'
 interface TimerProps {
   time: string,
   hanldeTimeIsOut: () => void,
-  toggleTimer: boolean
+  isTimerOn: boolean
 }
 
-const Timer = ({ time, hanldeTimeIsOut, toggleTimer }: TimerProps) => {
+const Timer = ({ time, isTimerOn, hanldeTimeIsOut }: TimerProps) => {
 
   const [timer, setTimer] = React.useState(time);
-  const [timerIsOn, setTimerIsOn] = React.useState(false)
 
   React.useEffect(() => {
-    if (toggleTimer) setTimerIsOn(prev => !prev)
-  }, [toggleTimer])
+   
+    //TIMERI EI SAMMU MISSÄÄN VAIHEESSA. GAME COMPONENTIN KÄSKY "EI MENE PERILLE"
+    if (isTimerOn) {
 
-  React.useEffect(() => {
-    if (timerIsOn) {
+      //TIMERI EI SAMMU MISSÄÄN VAIHEESSA. GAME COMPONENTIN KÄSKY "EI MENE PERILLE"
       let interval = setInterval(() => {
+        console.log(isTimerOn)
         setTimer((prev) => {
           const currentTime = prev.split(':');
           const newTimeInSeconds = (+currentTime[0] * 60 + +currentTime[1]) - 1;
@@ -29,17 +29,15 @@ const Timer = ({ time, hanldeTimeIsOut, toggleTimer }: TimerProps) => {
           newTime += "" + secs;
           return newTime;
         });
-      }, 1000);
+      }, 10);
 
       return () => clearInterval(interval);
+    }
+  }, [isTimerOn])
 
-    } else return;
-
-  }, [timerIsOn])
 
   React.useEffect(() => {
     if (timer === "0:00") {
-      setTimerIsOn(false)
       hanldeTimeIsOut();
     }
   }, [timer])
